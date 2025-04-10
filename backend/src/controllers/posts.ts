@@ -1,18 +1,68 @@
 import { Request, Response } from "express";
 import { db } from "../db/index.js";
 import { posts } from "../db/schema.js";
+import { eq } from "drizzle-orm";
 
 export const getAllPosts = async (req: Request, res: Response) => {
   const result = await db.select().from(posts);
   console.log("posts", result);
-  res.json(result[0]);
+  res.json(result);
 };
 
 export const insertPost = async (req: Request, res: Response) => {
-  const { title, description } = req.body;
+  const { user_id, title, description } = req.body;
   const result = await db
     .insert(posts)
-    .values({ title, description })
+    .values({ user_id, title, description })
     .returning();
+
   res.json(result[0]);
+};
+
+export const editPost = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { user_id, title, description } = req.body;
+
+  // check if the post was created by the user
+  const postCreator = await db
+    .select()
+    .from(posts)
+    .where(eq(posts.user_id, user_id));
+
+  if (postCreator.length === 0) {
+    console.log("User not found");
+    res.status(401).json({ message: "Unauthorized" });
+  }
+  // then update the post
+  const result = await db
+    .update(posts)
+    .set({ title, description })
+    .where(eq(posts.id, parseInt(id)))
+    .returning();
+
+  res
+    .status(201)
+    .json({ message: "Post updated succesfully!", post: result[0] });
+};
+
+export const deletePost = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { user_id } = req.body;
+
+  // check if the post was created by the user
+  const postCreator = await db
+    .select()
+    .from(posts)
+    .where(eq(posts.user_id, user_id));
+
+  if (postCreator.length === 0) {
+    console.log("User not found");
+    res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const result = await db.delete(posts).where(eq(posts.id, parseInt(id)));
+
+  res
+    .status(200)
+    .json({ message: "Post deleted succesfully!", post: result[0] });
 };

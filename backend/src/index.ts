@@ -11,8 +11,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-app.use("/posts", postRoutes);
 app.use("/auth", authRoutes);
+app.use("/posts", postRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   console.info("Received a request on / endpoint");
