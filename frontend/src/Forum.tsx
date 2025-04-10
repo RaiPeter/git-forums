@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router";
+import Comments from "./components/Comments";
 
 interface Forum {
   id: number;
@@ -23,23 +25,25 @@ const Forum = () => {
   const [forum, setForum] = useState<Forum | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
 
-  useEffect(() => {
-    const fetchForum = async () => {
-      try {
-        const { data } = await axios.get(
-          `http://localhost:3000/posts/${params.id}`
-        );
+  const fetchForum = async () => {
+    try {
+      const { data } = await axios.get(
+        `http://localhost:3000/posts/${params.id}`
+      );
 
-        console.log("Forum data:", data);
-        console.log("Forum data:", typeof data);
-        setForum(data["post"]);
-        setComments(data["comments"]);
-      } catch (error) {
-        console.error("Error fetching forum:", error);
-      }
-    };
+      console.log("Forum data:", data);
+      console.log("Forum data:", typeof data);
+      setForum(data["post"]);
+      setComments(data["comments"]);
+    } catch (error) {
+      console.error("Error fetching forum:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchForum();
   }, []);
+
   return (
     <div>
       <h1>Forum</h1>
@@ -56,6 +60,7 @@ const Forum = () => {
               </div>
             ))}
           </div>
+          <Comments onCommentSubmit={fetchForum} />
         </div>
       )}
     </div>

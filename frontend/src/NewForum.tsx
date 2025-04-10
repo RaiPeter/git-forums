@@ -1,10 +1,14 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { redirect } from "react-router";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router";
 
 const NewForum = () => {
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const navigate = useNavigate();
+
+  const user = useSelector((state: any) => state.auth.user.user);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -13,10 +17,11 @@ const NewForum = () => {
       const { data } = await axios.post("http://localhost:3000/posts", {
         title,
         description,
+        user_id: user.id,
       });
 
       console.log("New forum created:", data);
-      redirect("/");
+      navigate("/");
     } catch (error) {
       console.error("Error creating forum:", error);
     }

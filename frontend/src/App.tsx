@@ -16,8 +16,8 @@ function App() {
         <Route path="/signup" element={<Signup />} />
 
         <Route path="/" element={<Home />} />
-        <Route path="/forum/new" element={<NewForum />} />
         <Route path="/forum/:id" element={<Forum />} />
+        <Route path="/forum/new" element={<NewForum />} />
         {/* Add more routes as needed */}
       </Routes>
     </BrowserRouter>
