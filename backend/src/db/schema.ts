@@ -22,7 +22,9 @@ export const posts = pgTable("posts", {
 
 export const comments = pgTable("comments", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-  post_id: integer("post_id").references(() => posts.id),
+  post_id: integer("post_id").references(() => posts.id, {
+    onDelete: "cascade",
+  }),
   user_id: integer("user_id").references(() => users.id),
   content: varchar("content", { length: 1000 }).notNull(),
   created_at: timestamp("created_at", { withTimezone: true })

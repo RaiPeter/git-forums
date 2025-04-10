@@ -46,23 +46,28 @@ export const editPost = async (req: Request, res: Response) => {
 };
 
 export const deletePost = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { user_id } = req.body;
+  try {
+    const { id } = req.params;
+    const { user_id } = req.body;
 
-  // check if the post was created by the user
-  const postCreator = await db
-    .select()
-    .from(posts)
-    .where(eq(posts.user_id, user_id));
+    // check if the post was created by the user
+    const postCreator = await db
+      .select()
+      .from(posts)
+      .where(eq(posts.user_id, user_id));
 
-  if (postCreator.length === 0) {
-    console.log("User not found");
-    res.status(401).json({ message: "Unauthorized" });
+    if (postCreator.length === 0) {
+      console.log("User not found");
+      res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const result = await db.delete(posts).where(eq(posts.id, parseInt(id)));
+
+    res
+      .status(200)
+      .json({ message: "Post deleted succesfully!", post: result[0] });
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
-
-  const result = await db.delete(posts).where(eq(posts.id, parseInt(id)));
-
-  res
-    .status(200)
-    .json({ message: "Post deleted succesfully!", post: result[0] });
 };

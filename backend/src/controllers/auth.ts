@@ -78,3 +78,9 @@ export const loginUser = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const getAllUsers = async (req: Request, res: Response) => {
+  const result = await db.select().from(users);
+  console.log("getAllUsers", result);
+  res.json(result);
+};
