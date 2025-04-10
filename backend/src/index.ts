@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import postRoutes from "./routes/posts.js";
-import userRoutes from "./routes/users.js";
+import authRoutes from "./routes/auth.js";
 import cors from "cors";
 import "dotenv/config";
 
@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use("/posts", postRoutes);
-app.use("/auth", userRoutes);
+app.use("/auth", authRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   console.info("Received a request on / endpoint");

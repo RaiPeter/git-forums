@@ -6,6 +6,8 @@
         "outDir": "dist",
         "sourceMap": true,
         "noImplicitAny": true,
+        "strict": true
   },
   "include": ["src/**/*", "drizzle.config.ts"],
+  "exclude": ["node_modules"]
 }
