@@ -6,6 +6,7 @@ import Login from "./Login";
 import Signup from "./Signup";
 import Home from "./Home";
 import Forum from "./Forum";
+import NewForum from "./NewForum";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
 
         <Route path="/" element={<Home />} />
+        <Route path="/forum/new" element={<NewForum />} />
         <Route path="/forum/:id" element={<Forum />} />
         {/* Add more routes as needed */}
       </Routes>

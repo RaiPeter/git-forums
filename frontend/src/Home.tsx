@@ -29,6 +29,7 @@ const Home = () => {
     <div>
       <div>
         <label htmlFor="forums">forums</label>
+        <Link to={"/forum/new"}>New discussion</Link>
         {forums &&
           forums.map((forum) => (
             <Link key={forum.id} to={`/forum/${forum.id}`}>

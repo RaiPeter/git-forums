@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { db } from "../db/index.js";
-import { posts } from "../db/schema.js";
+import { comments, posts, users } from "../db/schema.js";
 import { eq } from "drizzle-orm";
 
 export const getAllPosts = async (req: Request, res: Response) => {
@@ -78,6 +78,20 @@ export const getPost = async (req: Request, res: Response) => {
     .select()
     .from(posts)
     .where(eq(posts.id, parseInt(id)));
-  console.log("post", result);
-  res.json(result[0]);
+
+  const commentsWithUsers = await db
+    .select({
+      id: comments.id,
+      content: comments.content,
+      created_at: comments.created_at,
+      user_id: users.id,
+      username: users.username,
+      email: users.email,
+    })
+    .from(comments)
+    .innerJoin(users, eq(comments.user_id, users.id))
+    .where(eq(comments.post_id, parseInt(id)));
+
+  console.log("post", result, commentsWithUsers);
+  res.json({ post: result[0], comments: commentsWithUsers });
 };

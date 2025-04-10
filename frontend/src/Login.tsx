@@ -1,10 +1,14 @@
 import axios from "axios";
 import React from "react";
-import { redirect } from "react-router";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
+import { login } from "./features/slices/authReducer";
 
 const Login = () => {
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -15,7 +19,8 @@ const Login = () => {
         password,
       });
       console.log("Login successful", data);
-      redirect("/");
+      dispatch(login(data));
+      navigate("/");
     } catch (error) {
       console.error("Error submitting form", error);
     }
