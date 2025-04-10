@@ -22,18 +22,7 @@ export const postComment = async (req: Request, res: Response) => {
 export const editComment = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { user_id, post_id, content } = req.body;
-
-    // check if the comment was created by the user
-    const commentCreator = await db
-      .select()
-      .from(comments)
-      .where(eq(comments.user_id, user_id));
-
-    if (commentCreator.length === 0) {
-      console.log("User not found");
-      res.status(401).json({ message: "Unauthorized" });
-    }
+    const { content } = req.body;
 
     // then update the comment
     const result = await db
@@ -54,20 +43,7 @@ export const editComment = async (req: Request, res: Response) => {
 export const deleteComment = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { user_id } = req.body;
 
-    // check if the comment was created by the user
-    const commentCreator = await db
-      .select()
-      .from(comments)
-      .where(eq(comments.user_id, user_id));
-
-    if (commentCreator.length === 0) {
-      console.log("User not found");
-      res.status(401).json({ message: "Unauthorized" });
-    }
-
-    // then delete the comment
     await db.delete(comments).where(eq(comments.id, parseInt(id)));
 
     res.status(200).json({ message: "Comment deleted successfully!" });

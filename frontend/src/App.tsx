@@ -7,6 +7,7 @@ import Signup from "./Signup";
 import Home from "./Home";
 import Forum from "./Forum";
 import NewForum from "./NewForum";
+import ForumEdit from "./ForumEdit";
 
 function App() {
   return (
@@ -17,8 +18,8 @@ function App() {
 
         <Route path="/" element={<Home />} />
         <Route path="/forum/:id" element={<Forum />} />
+        <Route path="/forum/:id/edit" element={<ForumEdit />} />
         <Route path="/forum/new" element={<NewForum />} />
-        {/* Add more routes as needed */}
       </Routes>
     </BrowserRouter>
   );

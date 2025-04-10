@@ -4,7 +4,19 @@ import { comments, posts, users } from "../db/schema.js";
 import { eq } from "drizzle-orm";
 
 export const getAllPosts = async (req: Request, res: Response) => {
-  const result = await db.select().from(posts);
+  const result = await db
+    .select({
+      id: posts.id,
+      title: posts.title,
+      description: posts.description,
+      created_at: posts.created_at,
+      user_id: users.id,
+      username: users.username,
+      email: users.email,
+    })
+    .from(posts)
+    .innerJoin(users, eq(posts.user_id, users.id));
+
   console.log("posts", result);
   res.json(result);
 };
@@ -48,19 +60,6 @@ export const editPost = async (req: Request, res: Response) => {
 export const deletePost = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { user_id } = req.body;
-
-    // check if the post was created by the user
-    const postCreator = await db
-      .select()
-      .from(posts)
-      .where(eq(posts.user_id, user_id));
-
-    if (postCreator.length === 0) {
-      console.log("User not found");
-      res.status(401).json({ message: "Unauthorized" });
-    }
-
     const result = await db.delete(posts).where(eq(posts.id, parseInt(id)));
 
     res
@@ -75,8 +74,16 @@ export const deletePost = async (req: Request, res: Response) => {
 export const getPost = async (req: Request, res: Response) => {
   const { id } = req.params;
   const result = await db
-    .select()
+    .select({
+      id: posts.id,
+      title: posts.title,
+      description: posts.description,
+      created_at: posts.created_at,
+      user_id: users.id,
+      username: users.username,
+    })
     .from(posts)
+    .innerJoin(users, eq(posts.user_id, users.id))
     .where(eq(posts.id, parseInt(id)));
 
   const commentsWithUsers = await db
