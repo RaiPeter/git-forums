@@ -71,3 +71,13 @@ export const deletePost = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const getPost = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await db
+    .select()
+    .from(posts)
+    .where(eq(posts.id, parseInt(id)));
+  console.log("post", result);
+  res.json(result[0]);
+};

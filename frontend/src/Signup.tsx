@@ -10,12 +10,12 @@ const Signup = () => {
     e.preventDefault();
     // Add your signup logic here
     try {
-      const res = await axios.post("http://localhost:3000/auth/signup", {
+      const { data } = await axios.post("http://localhost:3000/auth/signup", {
         username,
         email,
         password,
       });
-      console.log("Signup successful", res.data);
+      console.log("Signup successful", data);
     } catch (error) {
       console.error("Error submitting form", error);
     }
