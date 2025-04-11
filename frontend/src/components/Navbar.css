@@ -1,0 +1,26 @@
+nav {
+  height: 80px;
+  background-color: #eaeaea;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+nav .logo {
+  margin-left: 10px;
+}
+nav .links {
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+nav .links button {
+  background-color: #6f6f6f;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: white;
+  padding: 5px 5px;
+  transition: color 0.3s ease;
+}

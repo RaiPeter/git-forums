@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router";
 import Comments from "./components/Comments";
+import Navbar from "./components/Navbar";
+import "./Forum.css";
 
 interface Forum {
   id: number;
@@ -100,49 +102,75 @@ const Forum = () => {
 
   return (
     <div>
-      <h1>Forum</h1>
-      {forum && (
-        <div key={forum.id}>
-          <h2>{forum.title}</h2>
-          <p>{forum.description}</p>
-          <p>{new Date(forum.created_at).toLocaleDateString()}</p>
-          <p>{forum.username} asked</p>
-          <div>
-            {comments.map((comment) => (
-              <div key={comment.id}>
-                {editingCommentId === comment.id ? (
-                  <>
-                    <textarea
-                      value={editedContent}
-                      onChange={(e) => setEditedContent(e.target.value)}
-                    />
-                    <br />
-                    <button onClick={handleEditSave}>Save</button>
-                    <button onClick={handleEditCancel}>Cancel</button>
-                  </>
-                ) : (
-                  <>
-                    <p>{comment.content}</p>
-                    <p>{comment.username}</p>
-                    <p>{new Date(comment.created_at).toLocaleDateString()}</p>
-                    {comment.user_id === user.id && (
-                      <div>
-                        <button onClick={() => handleEditClick(comment)}>
-                          Edit
-                        </button>
-                        <button onClick={() => handleDelete(comment.id)}>
-                          Delete
-                        </button>
-                      </div>
-                    )}
-                  </>
-                )}
+      <Navbar />
+      <div className="forum-container">
+        <h2>discussion</h2>
+        {forum && (
+          <div key={forum.id} className="forum-card">
+            <h2>{forum.title}</h2>
+            <div className="forum-card-body">
+              <div className="forum-card-header">
+                <p>{forum.username} on</p>
+                <p>
+                  {new Date(forum.created_at).toLocaleDateString("en-us", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </p>
               </div>
-            ))}
+              <p>{forum.description}</p>
+            </div>
           </div>
-          <Comments onCommentSubmit={fetchForum} />
-        </div>
-      )}
+        )}
+        {comments.map((comment) => (
+          <div key={comment.id} className="comment-card">
+            {editingCommentId === comment.id ? (
+              <div className="comment-card-edit">
+                <textarea
+                  value={editedContent}
+                  onChange={(e) => setEditedContent(e.target.value)}
+                />
+                <br />
+                <div>
+                  <button onClick={handleEditSave}>Save</button>
+                  <button onClick={handleEditCancel}>Cancel</button>
+                </div>
+              </div>
+            ) : (
+              <div className="comment-card-body">
+                <div className="comment-card-header">
+                  <div>
+                    <p>{comment.username} replied on</p>
+                    <p>
+                      {new Date(comment.created_at).toLocaleDateString(
+                        "en-us",
+                        {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        }
+                      )}
+                    </p>
+                  </div>
+                  {comment.user_id === user.id && (
+                    <div>
+                      <button onClick={() => handleEditClick(comment)}>
+                        Edit
+                      </button>
+                      <button onClick={() => handleDelete(comment.id)}>
+                        Delete
+                      </button>
+                    </div>
+                  )}
+                </div>
+                <p>{comment.content}</p>
+              </div>
+            )}
+          </div>
+        ))}
+        <Comments onCommentSubmit={fetchForum} />
+      </div>
     </div>
   );
 };

@@ -1,9 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router";
-import { logout } from "./features/slices/authReducer";
 import "./Home.css";
+import { useSelector } from "react-redux";
+import Navbar from "./components/Navbar";
 
 interface Forums {
   id: number;
@@ -18,8 +18,8 @@ interface Forums {
 const Home = () => {
   const [forums, setForums] = useState<Forums[]>([]);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const user = useSelector((state: any) => state.auth.user.user);
+
   const handleDelete = async (id: number) => {
     try {
       await axios.delete(`http://localhost:3000/posts/${id}`);
@@ -28,11 +28,6 @@ const Home = () => {
     } catch (error) {
       console.error("Error deleting forum:", error);
     }
-  };
-
-  const handleLogout = async () => {
-    dispatch(logout());
-    navigate("/");
   };
 
   useEffect(() => {
@@ -50,15 +45,7 @@ const Home = () => {
   }, []);
   return (
     <div>
-      <nav>
-        <div className="logo">
-          <h1>Forum</h1>
-        </div>
-        <div className="links">
-          <label htmlFor="">{user.username}</label>
-          <button onClick={handleLogout}>Logout</button>
-        </div>
-      </nav>
+      <Navbar />
       <main>
         <div className="header">
           <label htmlFor="forums">Forums</label>
@@ -87,7 +74,13 @@ const Home = () => {
                 </div>
                 <div className="card-footer">
                   <p>{forum.username} asked on</p>
-                  <p>{new Date(forum.created_at).toLocaleDateString()}</p>
+                  <p>
+                    {new Date(forum.created_at).toLocaleDateString("en-US", {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </p>
                 </div>
               </div>
             </Link>

@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState, FC } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
-
+import "./Comments.css";
 interface CommentsProps {
   onCommentSubmit: () => void;
 }
@@ -28,14 +28,13 @@ const Comments: FC<CommentsProps> = ({ onCommentSubmit }) => {
   };
   return (
     <div>
-      <h3>Add a comment</h3>
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="comment">Comment:</label>
           <textarea
             id="comment"
             name="comment"
             required
+            placeholder="Add a comment..."
             value={addComment}
             onChange={(e) => setAddComment(e.target.value)}
           ></textarea>
