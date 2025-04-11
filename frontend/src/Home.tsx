@@ -1,7 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router";
+import { logout } from "./features/slices/authReducer";
+import "./Home.css";
 
 interface Forums {
   id: number;
@@ -16,6 +18,7 @@ interface Forums {
 const Home = () => {
   const [forums, setForums] = useState<Forums[]>([]);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const user = useSelector((state: any) => state.auth.user.user);
   const handleDelete = async (id: number) => {
     try {
@@ -25,6 +28,11 @@ const Home = () => {
     } catch (error) {
       console.error("Error deleting forum:", error);
     }
+  };
+
+  const handleLogout = async () => {
+    dispatch(logout());
+    navigate("/");
   };
 
   useEffect(() => {
@@ -42,31 +50,49 @@ const Home = () => {
   }, []);
   return (
     <div>
-      <div>
-        <label htmlFor="forums">forums</label>
-        <Link to={"/forum/new"}>New discussion</Link>
+      <nav>
+        <div className="logo">
+          <h1>Forum</h1>
+        </div>
+        <div className="links">
+          <label htmlFor="">{user.username}</label>
+          <button onClick={handleLogout}>Logout</button>
+        </div>
+      </nav>
+      <main>
+        <div className="header">
+          <label htmlFor="forums">Forums</label>
+          <Link to={"/forum/new"}>Start New discussion</Link>
+        </div>
         {forums &&
           forums.map((forum) => (
             <Link key={forum.id} to={`/forum/${forum.id}`}>
-              <h2>{forum.title}</h2>
-              <p>{forum.description}</p>
-              <p>{new Date(forum.created_at).toLocaleDateString()}</p>
-              <p>{forum.username} asked</p>
-              <div>
-                {forum.user_id === user.id ? (
-                  <>
-                    <Link to={`/forum/${forum.id}/edit`}>edit</Link>
-                    <button onClick={() => handleDelete(forum.id)}>
-                      Delete
-                    </button>
-                  </>
-                ) : (
-                  ""
-                )}
+              <div className="card-body">
+                <div className="card-header">
+                  <h2>{forum.title}</h2>
+                  {forum.user_id === user.id ? (
+                    <div>
+                      <button
+                        onClick={() => navigate(`/forum/${forum.id}/edit`)}
+                      >
+                        Edit
+                      </button>
+                      <button onClick={() => handleDelete(forum.id)}>
+                        Delete
+                      </button>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <div className="card-footer">
+                  <p>{forum.username} asked on</p>
+                  <p>{new Date(forum.created_at).toLocaleDateString()}</p>
+                </div>
               </div>
             </Link>
           ))}
-      </div>
+      </main>
     </div>
   );
 };

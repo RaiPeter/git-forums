@@ -20,7 +20,7 @@ const Login = () => {
       });
       console.log("Login successful", data);
       dispatch(login(data));
-      navigate("/");
+      navigate("/forums");
     } catch (error) {
       console.error("Error submitting form", error);
     }
