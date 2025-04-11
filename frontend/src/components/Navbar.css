@@ -8,6 +8,14 @@ nav {
 nav .logo {
   margin-left: 10px;
 }
+nav .logo h1 {
+  cursor: pointer;
+}
+
+nav .logo h1:hover {
+  color: #4b4b4b;
+  transition: color 0.3s ease;
+}
 nav .links {
   margin-right: 10px;
   display: flex;

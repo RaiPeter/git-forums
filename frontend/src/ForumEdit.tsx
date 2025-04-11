@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { use, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
+import "./ForumEdit.css";
 
 const ForumEdit = () => {
   const [title, setTitle] = useState<string>("");
@@ -26,7 +27,7 @@ const ForumEdit = () => {
       );
 
       console.log("New forum created:", data);
-      navigate("/");
+      navigate("/forums");
     } catch (error) {
       console.error("Error creating forum:", error);
     }
@@ -51,11 +52,11 @@ const ForumEdit = () => {
     fetchForum();
   }, []);
   return (
-    <div>
+    <div className="edit-forum">
       <h1>Edit Forum</h1>
       <form onSubmit={handleSubmit}>
         {forum && (
-          <div>
+          <>
             <div>
               <label htmlFor="title">Title:</label>
               <input
@@ -78,7 +79,7 @@ const ForumEdit = () => {
               ></textarea>
             </div>
             <button type="submit">Edit Forum</button>
-          </div>
+          </>
         )}
       </form>
     </div>

@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
+import "./NewForum.css";
 
 const NewForum = () => {
   const [title, setTitle] = useState<string>("");
@@ -21,14 +22,14 @@ const NewForum = () => {
       });
 
       console.log("New forum created:", data);
-      navigate("/");
+      navigate("/forums");
     } catch (error) {
       console.error("Error creating forum:", error);
     }
   };
   return (
-    <div>
-      <h1>New Forum</h1>
+    <div className="new-forum">
+      <h1>New Discussion</h1>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="title">Title:</label>
@@ -51,7 +52,7 @@ const NewForum = () => {
             onChange={(e) => setDescription(e.target.value)}
           ></textarea>
         </div>
-        <button type="submit">Create Forum</button>
+        <button type="submit">Start Discussion</button>
       </form>
     </div>
   );

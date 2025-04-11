@@ -15,7 +15,7 @@ const Navbar = () => {
   return (
     <nav>
       <div className="logo">
-        <h1>Forum</h1>
+        <h1 onClick={() => navigate("/forums")}>Forum</h1>
       </div>
       <div className="links">
         <label htmlFor="">{user.username}</label>

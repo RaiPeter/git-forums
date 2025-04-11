@@ -102,7 +102,6 @@ const Forum = () => {
 
   return (
     <div>
-      <Navbar />
       <div className="forum-container">
         <h2>discussion</h2>
         {forum && (

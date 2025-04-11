@@ -1,4 +1,4 @@
-textarea {
+.comments textarea {
   width: 100%;
   outline: none;
   height: 50px;
@@ -6,6 +6,6 @@ textarea {
   padding: 10px;
   resize: none;
 }
-button {
+.comments button {
   width: 100px;
 }

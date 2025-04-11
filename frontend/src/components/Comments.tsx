@@ -27,7 +27,7 @@ const Comments: FC<CommentsProps> = ({ onCommentSubmit }) => {
     }
   };
   return (
-    <div>
+    <div className="comments">
       <form onSubmit={handleSubmit}>
         <div>
           <textarea
