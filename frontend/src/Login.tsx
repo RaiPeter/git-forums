@@ -1,8 +1,9 @@
 import axios from "axios";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { login } from "./features/slices/authReducer";
+import "./Login.css";
 
 const Login = () => {
   const [email, setEmail] = React.useState<string>("");
@@ -26,7 +27,7 @@ const Login = () => {
     }
   };
   return (
-    <div>
+    <div className="login">
       <h1>Login</h1>
       <form onSubmit={handleSubmit}>
         <div>
@@ -48,6 +49,9 @@ const Login = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+        </div>
+        <div>
+          Don't have an account? <Link to={"/signup"}>Signup</Link>
         </div>
         <button type="submit">Login</button>
       </form>

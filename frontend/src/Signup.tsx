@@ -1,5 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { Link } from "react-router";
+import "./Signup.css";
 
 const Signup = () => {
   const [username, setUsername] = useState<string>("");
@@ -21,7 +23,7 @@ const Signup = () => {
     }
   };
   return (
-    <div>
+    <div className="signup">
       <h1>Signup</h1>
       <form onSubmit={handleSubmit}>
         <div>
@@ -53,6 +55,9 @@ const Signup = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+        </div>
+        <div>
+          Have an account already? <Link to={"/"}>Signin</Link>
         </div>
         <button type="submit">Signup</button>
       </form>
