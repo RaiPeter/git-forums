@@ -8,6 +8,13 @@
       "when": 1744288138019,
       "tag": "0000_little_amphibian",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1744475697089,
+      "tag": "0001_chilly_beyonder",
+      "breakpoints": true
     }
   ]
 }

@@ -31,3 +31,14 @@ export const comments = pgTable("comments", {
     .notNull()
     .defaultNow(),
 });
+
+export const upvotes = pgTable("upvotes", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  post_id: integer("post_id").references(() => posts.id, {
+    onDelete: "cascade",
+  }),
+  user_id: integer("user_id").references(() => users.id),
+  created_at: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});

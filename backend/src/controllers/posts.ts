@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { db } from "../db/index.js";
-import { comments, posts, users } from "../db/schema.js";
-import { eq } from "drizzle-orm";
+import { comments, posts, users, upvotes } from "../db/schema.js";
+import { count, eq } from "drizzle-orm";
 
 export const getAllPosts = async (req: Request, res: Response) => {
   const result = await db
@@ -13,9 +13,12 @@ export const getAllPosts = async (req: Request, res: Response) => {
       user_id: users.id,
       username: users.username,
       email: users.email,
+      upvotes: count(upvotes.id),
     })
     .from(posts)
-    .innerJoin(users, eq(posts.user_id, users.id));
+    .innerJoin(users, eq(posts.user_id, users.id))
+    .leftJoin(upvotes, eq(upvotes.post_id, posts.id))
+    .groupBy(posts.id, users.id);
 
   console.log("posts", result);
   res.json(result);
@@ -35,26 +38,30 @@ export const editPost = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { user_id, title, description } = req.body;
 
-  // check if the post was created by the user
-  const postCreator = await db
-    .select()
-    .from(posts)
-    .where(eq(posts.user_id, user_id));
+  try {
+    const postCreator = await db
+      .select()
+      .from(posts)
+      .where(eq(posts.user_id, user_id));
 
-  if (postCreator.length === 0) {
-    console.log("User not found");
-    res.status(401).json({ message: "Unauthorized" });
+    if (postCreator.length === 0) {
+      console.log("User not found");
+      res.status(401).json({ message: "Unauthorized" });
+    }
+    // then update the post
+    const result = await db
+      .update(posts)
+      .set({ title, description })
+      .where(eq(posts.id, parseInt(id)))
+      .returning();
+
+    res
+      .status(201)
+      .json({ message: "Post updated succesfully!", post: result[0] });
+  } catch (error) {
+    console.error("Error editing post:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
-  // then update the post
-  const result = await db
-    .update(posts)
-    .set({ title, description })
-    .where(eq(posts.id, parseInt(id)))
-    .returning();
-
-  res
-    .status(201)
-    .json({ message: "Post updated succesfully!", post: result[0] });
 };
 
 export const deletePost = async (req: Request, res: Response) => {
@@ -73,32 +80,49 @@ export const deletePost = async (req: Request, res: Response) => {
 
 export const getPost = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const result = await db
-    .select({
-      id: posts.id,
-      title: posts.title,
-      description: posts.description,
-      created_at: posts.created_at,
-      user_id: users.id,
-      username: users.username,
-    })
-    .from(posts)
-    .innerJoin(users, eq(posts.user_id, users.id))
-    .where(eq(posts.id, parseInt(id)));
+  try {
+    const result = await db
+      .select({
+        id: posts.id,
+        title: posts.title,
+        description: posts.description,
+        created_at: posts.created_at,
+        user_id: users.id,
+        username: users.username,
+      })
+      .from(posts)
+      .innerJoin(users, eq(posts.user_id, users.id))
+      .where(eq(posts.id, parseInt(id)));
 
-  const commentsWithUsers = await db
-    .select({
-      id: comments.id,
-      content: comments.content,
-      created_at: comments.created_at,
-      user_id: users.id,
-      username: users.username,
-      email: users.email,
-    })
-    .from(comments)
-    .innerJoin(users, eq(comments.user_id, users.id))
-    .where(eq(comments.post_id, parseInt(id)));
+    const commentsWithUsers = await db
+      .select({
+        id: comments.id,
+        content: comments.content,
+        created_at: comments.created_at,
+        user_id: users.id,
+        username: users.username,
+        email: users.email,
+      })
+      .from(comments)
+      .innerJoin(users, eq(comments.user_id, users.id))
+      .where(eq(comments.post_id, parseInt(id)));
 
-  console.log("post", result, commentsWithUsers);
-  res.json({ post: result[0], comments: commentsWithUsers });
+    const upvotesCountResult = await db
+      .select({ count: count() })
+      .from(upvotes)
+      .where(eq(upvotes.post_id, parseInt(id)));
+
+    const upvotesCount = upvotesCountResult[0]?.count ?? 0;
+
+    console.log("post", result, commentsWithUsers, upvotesCount);
+
+    res.json({
+      post: result[0],
+      comments: commentsWithUsers,
+      upvotesCount,
+    });
+  } catch (error) {
+    console.error("Error getting post:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };

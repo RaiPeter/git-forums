@@ -23,7 +23,7 @@ const Forums = () => {
     try {
       await axios.delete(`http://localhost:3000/posts/${id}`);
       setForums((prevForums) => prevForums.filter((forum) => forum.id !== id));
-      navigate("/");
+      navigate("/forums");
     } catch (error) {
       console.error("Error deleting forum:", error);
     }
