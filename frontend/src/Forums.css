@@ -25,9 +25,11 @@ main .header > a:hover {
 main .forums {
   text-decoration: none;
   color: rgb(71, 71, 71);
-  display: block;
+  display: flex;
   font-size: 20px;
   font-weight: bold;
+  column-gap: 20px;
+  align-items: center;
   padding: 15px 10px;
   border-bottom: 1px solid black;
 }
@@ -70,4 +72,15 @@ main .card-header button {
 main .card-header button:hover {
   background-color: white;
   color: rgb(176, 176, 176);
+}
+main .upvotes svg {
+  font-size: 0.8em;
+}
+main .upvotes {
+  font-size: 1em;
+}
+main .upvotes {
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 5px;
 }

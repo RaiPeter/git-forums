@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router";
 import "./Forums.css";
+import { FaArrowUp } from "react-icons/fa";
 
 interface Forums {
   id: number;
@@ -12,6 +13,7 @@ interface Forums {
   created_at: string;
   username: string;
   email: string;
+  upvotes: number;
 }
 
 const Forums = () => {
@@ -51,6 +53,10 @@ const Forums = () => {
       {forums &&
         forums.map((forum) => (
           <div key={forum.id} className="forums">
+            <div className="upvotes">
+              <FaArrowUp />
+              {forum.upvotes}
+            </div>
             <div className="card-body">
               <div className="card-header">
                 <h2 onClick={() => navigate(`/forums/${forum.id}`)}>

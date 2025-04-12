@@ -1,10 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link, useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import Comments from "./components/Comments";
-import Navbar from "./components/Navbar";
 import "./Forum.css";
+import { FaArrowUp } from "react-icons/fa";
 
 interface Forum {
   id: number;
@@ -13,6 +13,7 @@ interface Forum {
   created_at: string;
   user_id: number;
   username: string;
+  upvotesCount: number;
 }
 
 interface Comment {
@@ -30,7 +31,6 @@ const Forum = () => {
   const params = useParams();
   const [forum, setForum] = useState<Forum | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
-  const navigate = useNavigate();
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editedContent, setEditedContent] = useState<string>("");
   const user = useSelector((state: any) => state.auth.user.user);
@@ -89,7 +89,13 @@ const Forum = () => {
 
       console.log("Forum data:", data);
       console.log("Forum data:", typeof data);
+      console.log(typeof data["upvotesCount"]);
+      console.log("Forum data:", data["upvotesCount"]);
+
       setForum(data["post"]);
+      setForum((prev) =>
+        prev ? { ...prev, upvotesCount: data["upvotesCount"] } : null
+      );
       setComments(data["comments"]);
     } catch (error) {
       console.error("Error fetching forum:", error);
@@ -119,6 +125,9 @@ const Forum = () => {
                 </p>
               </div>
               <p>{forum.description}</p>
+              <div className="forum-upvotes">
+                <FaArrowUp /> {forum.upvotesCount}
+              </div>
             </div>
           </div>
         )}
