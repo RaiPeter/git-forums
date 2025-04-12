@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router";
 
 import "./App.css";
@@ -9,6 +8,7 @@ import Forum from "./Forum";
 import NewForum from "./NewForum";
 import ForumEdit from "./ForumEdit";
 import Forums from "./Forums";
+import History from "./History";
 
 function App() {
   return (
@@ -22,6 +22,7 @@ function App() {
           <Route path="/forums/:id" element={<Forum />} />
           <Route path="/forums/:id/edit" element={<ForumEdit />} />
           <Route path="/forums/new" element={<NewForum />} />
+          <Route path="/forums/history" element={<History />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { db } from "../db/index.js";
-import { users } from "../db/schema.js";
+import { comments, posts, upvotes, users } from "../db/schema.js";
 import bcrypt from "bcrypt";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 export const signupUser = async (req: Request, res: Response) => {
   try {
@@ -83,4 +83,80 @@ export const getAllUsers = async (req: Request, res: Response) => {
   const result = await db.select().from(users);
   console.log("getAllUsers", result);
   res.json(result);
+};
+
+export const getHistory = async (req: Request, res: Response) => {
+  const userId = parseInt(req.query.user_id as string);
+
+  if (!userId) {
+    res.status(400).json({ message: "Missing user_id" });
+  }
+
+  try {
+    const userPosts = await db
+      .select({
+        id: posts.id,
+        title: posts.title,
+        created_at: posts.created_at,
+      })
+      .from(posts)
+      .where(eq(posts.user_id, userId));
+
+    const userPostsWithType = userPosts.map((post) => ({
+      ...post,
+      type: "post",
+    }));
+
+    const userComments = await db
+      .select({
+        id: comments.id,
+        content: comments.content,
+        created_at: comments.created_at,
+        postId: posts.id,
+        postTitle: posts.title,
+        postAuthor: users.username,
+      })
+      .from(comments)
+      .innerJoin(posts, eq(comments.post_id, posts.id))
+      .innerJoin(users, eq(posts.user_id, users.id))
+      .where(eq(comments.user_id, userId));
+
+    const userCommentsWithType = userComments.map((comment) => ({
+      ...comment,
+      type: "comment",
+    }));
+
+    const userUpvotes = await db
+      .select({
+        id: upvotes.id,
+        created_at: upvotes.created_at,
+        postId: posts.id,
+        postTitle: posts.title,
+        postAuthor: users.username,
+      })
+      .from(upvotes)
+      .innerJoin(posts, eq(upvotes.post_id, posts.id))
+      .innerJoin(users, eq(posts.user_id, users.id))
+      .where(eq(upvotes.user_id, userId));
+
+    const userUpvotesWithType = userUpvotes.map((upvote) => ({
+      ...upvote,
+      type: "upvote",
+    }));
+
+    const combinedHistory = [
+      ...userPostsWithType,
+      ...userCommentsWithType,
+      ...userUpvotesWithType,
+    ].sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
+    console.log(combinedHistory);
+
+    res.json({ history: combinedHistory });
+  } catch (err) {
+    console.error("Error getting the history");
+    res.status(400).json({ message: "Error getting the history" });
+  }
 };

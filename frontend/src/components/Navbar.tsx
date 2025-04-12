@@ -19,6 +19,7 @@ const Navbar = () => {
       </div>
       <div className="links">
         <label htmlFor="">{user.username}</label>
+        <button onClick={() => navigate("/forums/history")}>history</button>
         <button onClick={handleLogout}>Logout</button>
       </div>
     </nav>
