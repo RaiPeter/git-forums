@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { db } from "../db/index.js";
 import { comments, posts, users, upvotes } from "../db/schema.js";
-import { count, eq } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 
 export const getAllPosts = async (req: Request, res: Response) => {
   const result = await db
@@ -80,6 +80,8 @@ export const deletePost = async (req: Request, res: Response) => {
 
 export const getPost = async (req: Request, res: Response) => {
   const { id } = req.params;
+  const userId = req.query.user_id as string;
+
   try {
     const result = await db
       .select({
@@ -114,12 +116,28 @@ export const getPost = async (req: Request, res: Response) => {
 
     const upvotesCount = upvotesCountResult[0]?.count ?? 0;
 
-    console.log("post", result, commentsWithUsers, upvotesCount);
+    let hasUpvoted = false;
+    if (userId) {
+      const existingUpvote = await db
+        .select()
+        .from(upvotes)
+        .where(
+          and(
+            eq(upvotes.post_id, parseInt(id)),
+            eq(upvotes.user_id, parseInt(userId))
+          )
+        );
+
+      hasUpvoted = existingUpvote.length > 0;
+    }
+
+    console.log("post", result, commentsWithUsers, upvotesCount, hasUpvoted);
 
     res.json({
       post: result[0],
       comments: commentsWithUsers,
       upvotesCount,
+      hasUpvoted,
     });
   } catch (error) {
     console.error("Error getting post:", error);

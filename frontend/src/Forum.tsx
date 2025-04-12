@@ -33,6 +33,8 @@ const Forum = () => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editedContent, setEditedContent] = useState<string>("");
+  const [hasUpvoted, setHasUpvoted] = useState<boolean>(false);
+
   const user = useSelector((state: any) => state.auth.user.user);
 
   const handleDelete = async (id: number) => {
@@ -81,22 +83,56 @@ const Forum = () => {
     }
   };
 
+  const handleUpvote = async (forum_id: number) => {
+    if (!forum || !user) return;
+    try {
+      if (hasUpvoted) {
+        await axios.delete("http://localhost:3000/upvote", {
+          data: {
+            post_id: forum_id,
+            user_id: user.id,
+          },
+        });
+
+        setForum((prev) =>
+          prev ? { ...prev, upvotesCount: prev.upvotesCount - 1 } : prev
+        );
+
+        setHasUpvoted(false);
+      } else {
+        await axios.post("http://localhost:3000/upvote", {
+          post_id: forum_id,
+          user_id: user.id,
+        });
+
+        setForum((prev) =>
+          prev ? { ...prev, upvotesCount: prev.upvotesCount + 1 } : prev
+        );
+        setHasUpvoted(true);
+      }
+    } catch (err) {
+      console.error("Upvote toggle failed:", err);
+    }
+  };
+
   const fetchForum = async () => {
     try {
       const { data } = await axios.get(
-        `http://localhost:3000/posts/${params.id}`
+        `http://localhost:3000/posts/${params.id}?user_id=${user.id}`
       );
 
       console.log("Forum data:", data);
       console.log("Forum data:", typeof data);
       console.log(typeof data["upvotesCount"]);
       console.log("Forum data:", data["upvotesCount"]);
+      console.log("has upvoted:", data.hasUpvoted);
 
-      setForum(data["post"]);
+      setForum(data.post);
       setForum((prev) =>
         prev ? { ...prev, upvotesCount: data["upvotesCount"] } : null
       );
-      setComments(data["comments"]);
+      setComments(data.comments);
+      setHasUpvoted(data.hasUpvoted);
     } catch (error) {
       console.error("Error fetching forum:", error);
     }
@@ -104,7 +140,7 @@ const Forum = () => {
 
   useEffect(() => {
     fetchForum();
-  }, []);
+  }, [user.id, params.id]);
 
   return (
     <div>
@@ -125,8 +161,12 @@ const Forum = () => {
                 </p>
               </div>
               <p>{forum.description}</p>
-              <div className="forum-upvotes">
-                <FaArrowUp /> {forum.upvotesCount}
+              <div
+                onClick={() => handleUpvote(forum.id)}
+                className="forum-upvotes"
+              >
+                <FaArrowUp color={hasUpvoted ? "orange" : "gray"} />{" "}
+                {forum.upvotesCount}
               </div>
             </div>
           </div>
