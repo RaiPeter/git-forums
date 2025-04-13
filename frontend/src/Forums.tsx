@@ -17,9 +17,13 @@ interface Forums {
 }
 
 const Forums = () => {
-  const [forums, setForums] = useState<Forums[]>([]);
   const navigate = useNavigate();
   const user = useSelector((state: any) => state.auth.user.user);
+
+  const [forums, setForums] = useState<Forums[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const limit = 5;
 
   const handleDelete = async (id: number) => {
     try {
@@ -34,16 +38,19 @@ const Forums = () => {
   useEffect(() => {
     const fetchForums = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/posts");
+        const response = await axios.get(
+          `http://localhost:3000/posts?page=${page}&limit=${limit}`
+        );
         const data = response.data;
         console.log("Forums data:", data);
-        setForums(data);
+        setForums(data.forums);
+        setTotalPages(Math.ceil(data.totalCount / limit));
       } catch (error) {
         console.error("Error fetching forums:", error);
       }
     };
     fetchForums();
-  }, []);
+  }, [page]);
   return (
     <main>
       <div className="header">
@@ -59,11 +66,13 @@ const Forums = () => {
             </div>
             <div className="card-body">
               <div className="card-header">
-                <h2 onClick={() => navigate(`/forums/${forum.id}`)}>
-                  {forum.title}
-                </h2>
+                <div>
+                  <h2 onClick={() => navigate(`/forums/${forum.id}`)}>
+                    {forum.title}
+                  </h2>
+                </div>
                 {forum.user_id === user.id ? (
-                  <div>
+                  <div className="action-buttons">
                     <button
                       onClick={() => navigate(`/forums/${forum.id}/edit`)}
                     >
@@ -90,6 +99,20 @@ const Forums = () => {
             </div>
           </div>
         ))}
+      <div className="pagination">
+        <button disabled={page === 1} onClick={() => setPage(page - 1)}>
+          Previous
+        </button>
+        <span>
+          Page {page} of {totalPages}
+        </span>
+        <button
+          disabled={page === totalPages}
+          onClick={() => setPage(page + 1)}
+        >
+          Next
+        </button>
+      </div>
     </main>
   );
 };

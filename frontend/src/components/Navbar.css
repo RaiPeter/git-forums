@@ -32,3 +32,14 @@ nav .links button {
   padding: 5px 5px;
   transition: color 0.3s ease;
 }
+
+nav .links a {
+  cursor: pointer;
+  text-decoration: none;
+  color: #4b4b4b;
+}
+
+nav .links a:hover {
+  cursor: pointer;
+  color: black;
+}

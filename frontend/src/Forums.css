@@ -1,6 +1,6 @@
 main {
   margin: auto;
-  max-width: 600px;
+  max-width: 800px;
 }
 main .header {
   margin-top: 10px;
@@ -37,7 +37,9 @@ main .forums:hover {
   color: rgb(85 85 85);
   background: rgb(233 233 233);
 }
-
+main .card-body {
+  width: 100%;
+}
 main .card-body .card-header {
   display: flex;
   justify-content: space-between;
@@ -73,14 +75,31 @@ main .card-header button:hover {
   background-color: white;
   color: rgb(176, 176, 176);
 }
+main .card-header .action-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 main .upvotes svg {
   font-size: 0.8em;
+  margin-right: 5px;
 }
 main .upvotes {
   font-size: 1em;
-}
-main .upvotes {
   border: 1px solid black;
   border-radius: 10px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+}
+main .pagination {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+}
+
+main .pagination button {
+  margin-left: 10px;
+  margin-right: 10px;
   padding: 5px;
 }

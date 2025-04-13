@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../features/slices/authReducer";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import "./Navbar.css";
 
 const Navbar = () => {
@@ -18,8 +18,7 @@ const Navbar = () => {
         <h1 onClick={() => navigate("/forums")}>Forum</h1>
       </div>
       <div className="links">
-        <label htmlFor="">{user.username}</label>
-        <button onClick={() => navigate("/forums/history")}>history</button>
+        <Link to={"/forums/history"}>{user.username}</Link>
         <button onClick={handleLogout}>Logout</button>
       </div>
     </nav>

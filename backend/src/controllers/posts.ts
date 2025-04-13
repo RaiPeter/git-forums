@@ -1,27 +1,47 @@
 import { Request, Response } from "express";
 import { db } from "../db/index.js";
 import { comments, posts, users, upvotes } from "../db/schema.js";
-import { and, count, eq } from "drizzle-orm";
+import { and, count, desc, eq } from "drizzle-orm";
 
 export const getAllPosts = async (req: Request, res: Response) => {
-  const result = await db
-    .select({
-      id: posts.id,
-      title: posts.title,
-      description: posts.description,
-      created_at: posts.created_at,
-      user_id: users.id,
-      username: users.username,
-      email: users.email,
-      upvotes: count(upvotes.id),
-    })
-    .from(posts)
-    .innerJoin(users, eq(posts.user_id, users.id))
-    .leftJoin(upvotes, eq(upvotes.post_id, posts.id))
-    .groupBy(posts.id, users.id);
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 10;
+  const offset = (page - 1) * limit;
 
-  console.log("posts", result);
-  res.json(result);
+  try {
+    const result = await db
+      .select({
+        id: posts.id,
+        title: posts.title,
+        description: posts.description,
+        created_at: posts.created_at,
+        user_id: users.id,
+        username: users.username,
+        email: users.email,
+        upvotes: count(upvotes.id),
+      })
+      .from(posts)
+      .innerJoin(users, eq(posts.user_id, users.id))
+      .leftJoin(upvotes, eq(upvotes.post_id, posts.id))
+      .groupBy(posts.id, users.id)
+      .orderBy(desc(posts.created_at))
+      .limit(limit)
+      .offset(offset);
+
+    const totalCountResult = await db
+      .select({
+        count: count(),
+      })
+      .from(posts);
+
+    const totalCount = totalCountResult[0].count;
+
+    console.log("posts", result);
+    res.json({ forums: result, totalCount });
+  } catch (err) {
+    console.error("Error fetching posts:", err);
+    res.status(400).json({ message: "Error fetching posts:" });
+  }
 };
 
 export const insertPost = async (req: Request, res: Response) => {
