@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import "./Forums.css";
 import { FaArrowUp } from "react-icons/fa";
 
@@ -21,9 +21,11 @@ const Forums = () => {
   const user = useSelector((state: any) => state.auth.user.user);
 
   const [forums, setForums] = useState<Forums[]>([]);
-  const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const limit = 5;
+  const page = parseInt(searchParams.get("page") || "1");
 
   const handleDelete = async (id: number) => {
     try {
@@ -35,12 +37,16 @@ const Forums = () => {
     }
   };
 
+  const handlePageChange = (newPage: number) => {
+    setSearchParams({ page: newPage.toString() });
+  };
+
   useEffect(() => {
     const fetchForums = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:3000/posts?page=${page}&limit=${limit}`
-        );
+        const response = await axios.get("http://localhost:3000/posts", {
+          params: { page, limit },
+        });
         const data = response.data;
         console.log("Forums data:", data);
         setForums(data.forums);
@@ -100,7 +106,10 @@ const Forums = () => {
           </div>
         ))}
       <div className="pagination">
-        <button disabled={page === 1} onClick={() => setPage(page - 1)}>
+        <button
+          disabled={page === 1}
+          onClick={() => handlePageChange(page - 1)}
+        >
           Previous
         </button>
         <span>
@@ -108,7 +117,7 @@ const Forums = () => {
         </span>
         <button
           disabled={page === totalPages}
-          onClick={() => setPage(page + 1)}
+          onClick={() => handlePageChange(page + 1)}
         >
           Next
         </button>
