@@ -9,6 +9,7 @@ import NewForum from "./NewForum";
 import ForumEdit from "./ForumEdit";
 import Forums from "./Forums";
 import History from "./History";
+import ProtectedRoutes from "./components/ProtectedRoutes";
 
 function App() {
   return (
@@ -17,12 +18,19 @@ function App() {
         <Route index path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
-        <Route path="forums" element={<Home />}>
+        <Route
+          path="forums"
+          element={
+            <ProtectedRoutes>
+              <Home />
+            </ProtectedRoutes>
+          }
+        >
           <Route index element={<Forums />} />
-          <Route path="/forums/:id" element={<Forum />} />
-          <Route path="/forums/:id/edit" element={<ForumEdit />} />
-          <Route path="/forums/new" element={<NewForum />} />
-          <Route path="/forums/history" element={<History />} />
+          <Route path=":id" element={<Forum />} />
+          <Route path=":id/edit" element={<ForumEdit />} />
+          <Route path="new" element={<NewForum />} />
+          <Route path="history" element={<History />} />
         </Route>
       </Routes>
     </BrowserRouter>
