@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./History.css";
 import axios from "axios";
 import { useSelector } from "react-redux";

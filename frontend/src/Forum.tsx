@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import Comments from "./components/Comments";
@@ -61,12 +61,9 @@ const Forum = () => {
   const handleEditSave = async () => {
     if (!editingCommentId) return;
     try {
-      const { data } = await axios.put(
-        `http://localhost:3000/comments/${editingCommentId}`,
-        {
-          content: editedContent,
-        }
-      );
+      await axios.put(`http://localhost:3000/comments/${editingCommentId}`, {
+        content: editedContent,
+      });
 
       setComments((prev) =>
         prev.map((comment) =>
