@@ -118,3 +118,27 @@ Accessing the App
 
 - The backend server runs on `http://localhost:3000`.
 - The frontend app runs on `http://localhost:5173`.
+
+### Here are some of the screenshots :
+
+![Screenshot 2025-04-14 010808](https://github.com/user-attachments/assets/87da7d91-8c6a-4517-b7cd-09e484ddc54a)
+
+![Screenshot 2025-04-14 010825](https://github.com/user-attachments/assets/695d6632-b351-4a64-af84-7b639751e470)
+
+![Screenshot 2025-04-14 010843](https://github.com/user-attachments/assets/68b1eeba-a610-4c03-b2b2-65927c5f37f2)
+
+![Screenshot 2025-04-14 010902](https://github.com/user-attachments/assets/54448543-2b1f-4891-a74b-7ac7714fc8e0)
+
+![Screenshot 2025-04-14 010948](https://github.com/user-attachments/assets/4e6a4047-b0d5-41c9-b297-b97a898ba683)
+
+![Screenshot 2025-04-14 011014](https://github.com/user-attachments/assets/e04bf496-c3de-46a0-8c8f-35825b1c16e1)
+
+![Screenshot 2025-04-14 011033](https://github.com/user-attachments/assets/c9f28d55-0a33-4ab8-a74f-ce8950803b7e)
+
+
+
+
+
+
+
+
